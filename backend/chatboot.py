@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import pickle
 
 # Charger le pipeline
-with open("model.pkl", "rb") as f:
+with open("https://drive.google.com/file/d/12zlu_C1WA1SFTla4cUG3hDVRpvqoK0dP/view?usp=drive_link", "rb") as f:
     model = pickle.load(f)
 
 intent_responses = {
