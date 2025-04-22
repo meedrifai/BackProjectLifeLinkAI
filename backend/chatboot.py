@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -5,16 +6,23 @@ import gdown
 import pickle
 
 # Charger le pipeline
-# Extract file ID from the Google Drive URL
-file_id = "12zlu_C1WA1SFTla4cUG3hDVRpvqoK0dP"
-output = "model.pkl"
+def load_model():
+    file_id = "12zlu_C1WA1SFTla4cUG3hDVRpvqoK0dP"
+    model_path = "model.pkl"
+    
+    # Download only if file doesn't exist
+    if not os.path.exists(model_path):
+        print("Downloading model file...")
+        gdown.download(f"https://drive.google.com/uc?id={file_id}", model_path, quiet=False)
+    
+    # Load the model
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+    
+    return model
 
-# Download the file
-gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
-
-# Load the model
-with open(output, "rb") as f:
-    model = pickle.load(f)
+# Get the model when needed
+model = load_model()
 
 intent_responses = {
     "StartConversation": "Welcome! I'm here to answer all your questions about blood donation. Feel free to ask me whatever you're interested in.",
