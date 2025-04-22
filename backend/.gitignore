@@ -87,6 +87,5 @@ local_settings.py
 .env.*
 
 credentials.json
-
 *.pkl
 *.csv
