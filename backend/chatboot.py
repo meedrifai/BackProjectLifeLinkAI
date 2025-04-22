@@ -1,10 +1,19 @@
 from fastapi import APIRouter, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import gdown
 import pickle
 
 # Charger le pipeline
-with open("https://drive.google.com/file/d/12zlu_C1WA1SFTla4cUG3hDVRpvqoK0dP/view?usp=drive_link", "rb") as f:
+# Extract file ID from the Google Drive URL
+file_id = "12zlu_C1WA1SFTla4cUG3hDVRpvqoK0dP"
+output = "model.pkl"
+
+# Download the file
+gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
+
+# Load the model
+with open(output, "rb") as f:
     model = pickle.load(f)
 
 intent_responses = {
