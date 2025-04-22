@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic[email]
+firebase-admin
+python-jose
+python-dotenv
+numpy
+pandas
+nltk
+scikit-learn
+joblib
+xgboost
