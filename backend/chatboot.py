@@ -7,16 +7,14 @@ import pickle
 
 # Charger le pipeline
 def load_model():
-    file_id = "12zlu_C1WA1SFTla4cUG3hDVRpvqoK0dP"
     model_path = "model.pkl"
     
-    # Download only if file doesn't exist
+    # Verify file exists before loading
     if not os.path.exists(model_path):
-        print("Downloading model file...")
-        gdown.download(f"https://drive.google.com/uc?id={file_id}", model_path, quiet=False)
+        raise FileNotFoundError(f"Le fichier '{model_path}' n'existe pas dans le répertoire courant.")
     
     # Load the model
-    with open(model_path, "rb") as f:
+    with open(model_path, 'rb') as f:
         model = pickle.load(f)
     
     return model
