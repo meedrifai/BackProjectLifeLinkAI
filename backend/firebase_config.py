@@ -41,6 +41,3 @@ def initialize_firebase():
         raise ValueError(f"FIREBASE_CREDENTIALS n'est pas du JSON valide: {e}")
     except Exception as e:
         raise ValueError(f"Erreur lors de l'initialisation de Firebase: {e}")
-
-# Initialiser Firebase au chargement du module
-initialize_firebase()
