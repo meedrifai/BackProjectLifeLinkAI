@@ -6,38 +6,41 @@ import firebase_admin
 from firebase_admin import credentials
 
 def initialize_firebase():
-    """Initialize Firebase using base64 encoded JSON credentials from environment variable"""
+    """Initialise Firebase Admin SDK avec les credentials encodés en base64 dans la variable d'environnement FIREBASE_CREDENTIALS_BASE64."""
 
     encoded_creds = os.environ.get("FIREBASE_CREDENTIALS_BASE64")
     if not encoded_creds:
-        raise ValueError("La variable d'environnement FIREBASE_CREDENTIALS_BASE64 est manquante")
+        raise ValueError("La variable d'environnement FIREBASE_CREDENTIALS_BASE64 est manquante.")
 
     try:
-        # Décoder base64 en JSON string
+        # Décoder la chaîne base64 en JSON string
         creds_json = base64.b64decode(encoded_creds).decode('utf-8')
 
-        # Valider que c'est du JSON valide
+        # Vérifier que c'est un JSON valide
         creds_dict = json.loads(creds_json)
-        print(f"Firebase project ID: {creds_dict.get('project_id', 'N/A')}")
+        project_id = creds_dict.get('project_id', 'N/A')
+        print(f"Firebase project ID détecté : {project_id}")
 
-        # Créer un fichier temporaire pour les credentials
-        with tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix=".json") as f:
-            f.write(creds_json)
-            f.flush()
-            firebase_cred_file = f.name
-
-        # Initialiser Firebase si ce n'est pas déjà fait
+        # Si Firebase n'est pas déjà initialisé
         if not firebase_admin._apps:
-            cred = credentials.Certificate(firebase_cred_file)
-            firebase_admin.initialize_app(cred, {
-                "databaseURL": "https://blood-3fda1-default-rtdb.firebaseio.com/"
-            })
-            print("Firebase Admin SDK initialized successfully!")
+            # Écrire temporairement les credentials dans un fichier
+            with tempfile.NamedTemporaryFile(mode='w+', delete=False, suffix=".json") as f:
+                f.write(creds_json)
+                firebase_cred_file = f.name
 
-        # Nettoyer le fichier temporaire
-        os.unlink(firebase_cred_file)
+            try:
+                cred = credentials.Certificate(firebase_cred_file)
+                firebase_admin.initialize_app(cred, {
+                    "databaseURL": f"https://{project_id}-default-rtdb.firebaseio.com/"
+                })
+                print("Firebase Admin SDK initialisé avec succès !")
+            finally:
+                # Supprimer le fichier temporaire même en cas d'erreur
+                os.unlink(firebase_cred_file)
+        else:
+            print("Firebase Admin SDK est déjà initialisé.")
 
     except json.JSONDecodeError as e:
-        raise ValueError(f"Le contenu décodé n'est pas un JSON valide: {e}")
+        raise ValueError(f"Le contenu décodé n'est pas un JSON valide : {e}")
     except Exception as e:
-        raise ValueError(f"Erreur lors de l'initialisation de Firebase: {e}")
+        raise ValueError(f"Erreur lors de l'initialisation de Firebase : {e}")
