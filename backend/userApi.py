@@ -1,8 +1,12 @@
+#userApi.py
 from fastapi import APIRouter, HTTPException, Query
 from firebase_admin import db
 from pydantic import BaseModel
 import firebase_config  # Firebase setup file
 from datetime import datetime, timedelta
+
+
+firebase_config.initialize_firebase()
 
 # Initialize FastAPI router for user/donor endpoints
 router = APIRouter()
