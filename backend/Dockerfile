@@ -4,7 +4,7 @@ FROM python:3.13.3-slim
 # Set working directory
 WORKDIR /app
 
-# Copy just requirements first (to leverage Docker layer caching)
+# Copy just requirements first
 COPY requirements.txt .
 
 # Install dependencies with custom cache directory
